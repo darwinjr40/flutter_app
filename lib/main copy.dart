@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const url = 'http://192.168.0.13/efoodv1/api/v1/products/latest';
     final resp = await http.get(Uri.parse(url));
     final jsonResponse = json.decode(resp.body);
-    print(jsonResponse);
+    debugPrint(jsonResponse);
 
   }
 
