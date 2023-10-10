@@ -75,16 +75,25 @@ class Compra {
         "descuento": descuento,
         "total": total,
   };
+  
+  Map<String, dynamic> toJsonT() => {
+        "Fecha Hora": fecha?.toString(),
+        "Proveedor": proveedor,
+        "Cantidad": cantidad,
+        "Costo": costo,
+        "Descuento": descuento,
+        "Total": total,
+  };
  
   static List<String> dataColumns(List<Compra> compras){
      return (compras.isEmpty)
         ? List<String>.empty()
-        : compras.first.toJson().keys.toList();
+        : compras.first.toJsonT().keys.toList();
   }
 
   static List<Map<String, dynamic>> dataRow(List<Compra> compras) {
     return compras.map(
-      (element) => element.toJson()
+      (element) => element.toJsonT()
     ).toList();
   }
 }
