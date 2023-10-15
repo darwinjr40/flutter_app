@@ -2,16 +2,20 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
+import 'package:flutter_app/helpers/excel_generator.dart';
+// import 'package:open_file/open_file.dart';
+// import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:excel/excel.dart';
+// import 'package:excel/excel.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,12 +23,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,11 +39,16 @@ class HomePage extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async{
             // crearArchivoExcel();
             // copyExcelFileToDownloads();
             // checkPermission();
-            descargarArchivoTexto();
+            // descargarArchivoTexto();
+            final file = await ExcelGenerator.resumenXsl();
+            if(file == null)return ;
+            // await OpenFilex.open(file.path);
+            // final result = await OpenFile.open(path);
+
           },
           child: Text('Crear archivo Excel'),
         ),
@@ -46,58 +57,21 @@ class HomePage extends StatelessWidget {
   }
 }
 
-Future<String> generarArchivoExcel() async {
-  final directorio = await getTemporaryDirectory();
-  final rutaArchivo = '${directorio.path}/archivo_excel.xlsx';
-  final libro = Excel.createExcel();
-  libro.setDefaultSheet("Hoja1");
-  libro.save(fileName: rutaArchivo);
-  print(await verificarArchivoTemporal(rutaArchivo));
 
-  return rutaArchivo;
-}
-
-void verificarArchivoExcelTemporal() async {
-  final directorio = await getTemporaryDirectory();
-  final rutaArchivo = '${directorio.path}/archivo_excel.xlsx';
-
-  final archivo = File(rutaArchivo);
-  final directorioExiste = await directorio.exists();
-  final archivoExiste = await archivo.exists();
-
-  print('El directorio temporal existe: $directorioExiste');
-  print('El archivo temporal existe: $archivoExiste');
-}
 
 void crearArchivoExcel() async {
   final status = await Permission.storage.request();
   if (status.isGranted) {
     final directorio = await getTemporaryDirectory();
     final rutaArchivo = '${directorio.path}/archivo_excel.xlsx';
-    final libro = Excel.createExcel();
-    libro.setDefaultSheet("Hoja1");
-    libro.save(fileName: rutaArchivo);
-    verificarArchivoExcelTemporal();
+    // final libro = Excel.createExcel();
+    // libro.setDefaultSheet("Hoja1");
+    // libro.save(fileName: rutaArchivo);
   } else {
     print('Permission denied');
   }
 }
 
-Future<bool> fileExists(String filePath) async {
-  final file = File(filePath);
-  return await file.exists();
-}
-
-Future<bool> fileExists1(String filePath) async {
-  print(await fileExists1(filePath));
-  final archivo = File(filePath);
-  return archivo.existsSync();
-}
-
-Future<bool> verificarArchivoTemporal(String rutaArchivo) async {
-  final archivo = File(rutaArchivo);
-  return await archivo.exists();
-}
 
 Future<bool> _requestPermission(Permission permission) async {
   AndroidDeviceInfo build = await DeviceInfoPlugin().androidInfo;
@@ -156,9 +130,9 @@ Future<void> copyExcelFileToDownloads() async {
 Future<File> crearArchivoExcelTemporal() async {
   final directorio = await getTemporaryDirectory();
   final rutaArchivo = '${directorio.path}/archivo_excel.xlsx';
-  final libro = Excel.createExcel();
-  libro.setDefaultSheet("Hoja1");
-  libro.save(fileName: rutaArchivo);
+  // final libro = Excel.createExcel();
+  // libro.setDefaultSheet("Hoja1");
+  // libro.save(fileName: rutaArchivo);
 
   final archivo = File(rutaArchivo);
   final directorioExiste = await directorio.exists();
@@ -213,22 +187,22 @@ void descargarArchivoTexto() async {
 }
 
 void abrirFile(String path) async {
-  final result = await OpenFile.open(path);
-  if (result.type == ResultType.done) {
-    print('El archivo se ha abierto correctamente.');
-  } else {
-    print('No se pudo abrir el archivo.');
-  }
+  // final result = await OpenFile.open(path);
+  // if (result.type == ResultType.done) {
+  //   print('El archivo se ha abierto correctamente.');
+  // } else {
+  //   print('No se pudo abrir el archivo.');
+  // }
 }
 
-Future<void> copyFileToDownloads(File sourceFile) async {
-    try {
-      final downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
-      final destinationFile = File('${downloadsDirectory.path}/${sourceFile.uri.pathSegments.last}');
+// Future<void> copyFileToDownloads(File sourceFile) async {
+//     try {
+//       final downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+//       final destinationFile = File('${downloadsDirectory.path}/${sourceFile.uri.pathSegments.last}');
 
-      await sourceFile.copy(destinationFile.path);
-      print('Archivo copiado a la carpeta de descargas: ${destinationFile.path}');
-    } catch (e) {
-      print('Error al copiar el archivo a descargas: $e');
-    }
-  }
+//       await sourceFile.copy(destinationFile.path);
+//       print('Archivo copiado a la carpeta de descargas: ${destinationFile.path}');
+//     } catch (e) {
+//       print('Error al copiar el archivo a descargas: $e');
+//     }
+//   }
